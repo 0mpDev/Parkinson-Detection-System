@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parkinson's Disease Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 2rem;
+        }
+        .form-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .result-container {
+            display: none;
+            margin-top: 2rem;
+        }
+        .feature-group {
+            margin-bottom: 1.5rem;
+        }
+        .feature-label {
+            font-weight: 500;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="form-container">
+                    <h1 class="text-center mb-4">Parkinson's Disease Prediction</h1>
+                    <p class="text-center text-muted mb-4">Enter voice measurements to predict Parkinson's disease probability</p>
+                    
+                    <form id="predictionForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:Fo(Hz)</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_fo" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:Fhi(Hz)</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_fhi" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:Flo(Hz)</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_flo" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:Jitter(%)</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_jitter" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:Jitter(Abs)</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_jitter_abs" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:RAP</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_rap" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:PPQ</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_ppq" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">Jitter:DDP</label>
+                                    <input type="number" step="0.001" class="form-control" name="jitter_ddp" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:Shimmer</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_shimmer" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:Shimmer(dB)</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_shimmer_db" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">Shimmer:APQ3</label>
+                                    <input type="number" step="0.001" class="form-control" name="shimmer_apq3" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="feature-group">
+                                    <label class="feature-label">Shimmer:APQ5</label>
+                                    <input type="number" step="0.001" class="form-control" name="shimmer_apq5" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">MDVP:APQ</label>
+                                    <input type="number" step="0.001" class="form-control" name="mdvp_apq" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">Shimmer:DDA</label>
+                                    <input type="number" step="0.001" class="form-control" name="shimmer_dda" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">NHR</label>
+                                    <input type="number" step="0.001" class="form-control" name="nhr" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">HNR</label>
+                                    <input type="number" step="0.001" class="form-control" name="hnr" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">RPDE</label>
+                                    <input type="number" step="0.001" class="form-control" name="rpde" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">DFA</label>
+                                    <input type="number" step="0.001" class="form-control" name="dfa" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">spread1</label>
+                                    <input type="number" step="0.001" class="form-control" name="spread1" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">spread2</label>
+                                    <input type="number" step="0.001" class="form-control" name="spread2" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">D2</label>
+                                    <input type="number" step="0.001" class="form-control" name="d2" required>
+                                </div>
+                                <div class="feature-group">
+                                    <label class="feature-label">PPE</label>
+                                    <input type="number" step="0.001" class="form-control" name="ppe" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Predict</button>
+                        </div>
+                    </form>
+
+                    <div class="result-container" id="resultContainer">
+                        <div class="alert alert-info">
+                            <h4 class="alert-heading">Prediction Result</h4>
+                            <p id="predictionText"></p>
+                            <p id="probabilityText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    alert(result.error);
+                    return;
+                }
+                
+                document.getElementById('predictionText').textContent = `Diagnosis: ${result.prediction}`;
+                document.getElementById('probabilityText').textContent = `Probability: ${result.probability}`;
+                document.getElementById('resultContainer').style.display = 'block';
+                
+            } catch (error) {
+                alert('An error occurred while making the prediction.');
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html> 
