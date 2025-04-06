@@ -34,10 +34,10 @@ ENV/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Model files
-*.pkl
-*.h5
-*.model
+# Model files (comment these out if you want to include trained models)
+# *.pkl
+# *.h5
+# *.model
 
 # Logs
 *.log

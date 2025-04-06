@@ -33,29 +33,33 @@ plt.show()
 X = df.drop(['name', 'status'], axis=1)
 y = df['status']
 
+# Split data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
 # Feature selection using ANOVA F-value
 selector = SelectKBest(f_classif, k=10)
-X_selected = selector.fit_transform(X, y)
-selected_features = X.columns[selector.get_support()]
-print("\nTop 10 important features:")
-print(selected_features)
+X_train_selected = selector.fit_transform(X_train, y_train)
+X_test_selected = selector.transform(X_test)
 
-# Split data into train and test sets
-X_train, X_test, y_train, y_test = train_test_split(X_selected, y, test_size=0.2, random_state=42, stratify=y)
+# Save the feature selector
+joblib.dump(selector, 'selector.pkl')
 
 # Standardize the features
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+X_train_scaled = scaler.fit_transform(X_train_selected)
+X_test_scaled = scaler.transform(X_test_selected)
 
 # Save the scaler
 joblib.dump(scaler, 'scaler.pkl')
 
 # Dimensionality reduction with PCA
 pca = PCA(n_components=0.95)  # Retain 95% of variance
-X_train_pca = pca.fit_transform(X_train)
-X_test_pca = pca.transform(X_test)
+X_train_pca = pca.fit_transform(X_train_scaled)
+X_test_pca = pca.transform(X_test_scaled)
 print(f"\nReduced to {pca.n_components_} components")
+
+# Save the PCA transformer
+joblib.dump(pca, 'pca.pkl')
 
 # Model Training and Evaluation
 def evaluate_model(model, X_train, X_test, y_train, y_test):

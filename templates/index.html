@@ -27,6 +27,35 @@
             font-weight: 500;
             color: #495057;
         }
+        .prediction-result {
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .healthy {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .disease {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .error-message {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -138,11 +167,20 @@
                         </div>
                     </form>
 
+                    <div class="loading" id="loadingIndicator">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Processing prediction...</p>
+                    </div>
+
+                    <div class="error-message" id="errorMessage"></div>
+
                     <div class="result-container" id="resultContainer">
-                        <div class="alert alert-info">
-                            <h4 class="alert-heading">Prediction Result</h4>
-                            <p id="predictionText"></p>
-                            <p id="probabilityText"></p>
+                        <div class="prediction-result" id="predictionResult">
+                            <h4 class="mb-3">Prediction Result</h4>
+                            <p id="predictionText" class="mb-2"></p>
+                            <p id="probabilityText" class="mb-0"></p>
                         </div>
                     </div>
                 </div>
@@ -155,6 +193,11 @@
         document.getElementById('predictionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
             const formData = new FormData(e.target);
             
             try {
@@ -165,17 +208,27 @@
                 
                 const result = await response.json();
                 
+                // Hide loading indicator
+                document.getElementById('loadingIndicator').style.display = 'none';
+                
                 if (result.error) {
-                    alert(result.error);
+                    document.getElementById('errorMessage').textContent = result.error;
+                    document.getElementById('errorMessage').style.display = 'block';
                     return;
                 }
+                
+                const predictionResult = document.getElementById('predictionResult');
+                predictionResult.className = 'prediction-result ' + 
+                    (result.prediction === 'Healthy' ? 'healthy' : 'disease');
                 
                 document.getElementById('predictionText').textContent = `Diagnosis: ${result.prediction}`;
                 document.getElementById('probabilityText').textContent = `Probability: ${result.probability}`;
                 document.getElementById('resultContainer').style.display = 'block';
                 
             } catch (error) {
-                alert('An error occurred while making the prediction.');
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('errorMessage').textContent = 'An error occurred while making the prediction.';
+                document.getElementById('errorMessage').style.display = 'block';
                 console.error(error);
             }
         });
